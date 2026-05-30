@@ -46,6 +46,7 @@ skills/production-readiness/SKILL.md
 Copy or symlink the skill directory into your Claude Code skills directory:
 
 ```bash
+mkdir -p ~/.claude/skills
 ln -s /path/to/production-readiness/skills/production-readiness ~/.claude/skills/production-readiness
 ```
 
@@ -142,19 +143,36 @@ Conclusion guidance:
 production-readiness/
   .codex-plugin/
     plugin.json
+  INSTALL.md
+  LICENSE
+  README.md
   skills/
     production-readiness/
       SKILL.md
       references/
       scripts/
         inspect_project.py
-  README.md
-  LICENSE
+  tests/
+    test_inspect_project.py
 ```
 
 ## Status
 
-This project is in its first implementation pass. The initial release target is `0.1.0`.
+Initial release target: `0.1.0`.
+
+## Development Checks
+
+Run the inspector tests:
+
+```bash
+python3 -m unittest tests/test_inspect_project.py
+```
+
+Validate the plugin manifest if you have the Codex plugin validator available:
+
+```bash
+python3 /Users/rockyyang/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py .
+```
 
 ## License
 

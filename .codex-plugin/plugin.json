@@ -1,0 +1,39 @@
+{
+  "name": "production-readiness",
+  "version": "0.1.0",
+  "description": "Agent skill and Codex-compatible plugin for production readiness reviews.",
+  "author": {
+    "name": "Rocky Yang",
+    "email": "rockyyang951225@gmail.com",
+    "url": "https://github.com/RockyYang1225"
+  },
+  "homepage": "https://github.com/RockyYang1225/production-readiness",
+  "repository": "https://github.com/RockyYang1225/production-readiness",
+  "license": "MIT",
+  "keywords": [
+    "production-readiness",
+    "launch-readiness",
+    "release-readiness",
+    "code-review",
+    "agent-skill"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Production Readiness",
+    "shortDescription": "Review whether a project is ready for production.",
+    "longDescription": "Evidence-first production readiness reviews for demo apps, APIs, web apps, full-stack projects, and general software projects.",
+    "developerName": "Rocky Yang",
+    "category": "Development",
+    "capabilities": [
+      "Read",
+      "Analyze"
+    ],
+    "websiteURL": "https://github.com/RockyYang1225/production-readiness",
+    "defaultPrompt": [
+      "Review this project for production readiness.",
+      "Run a launch-readiness review for this demo app.",
+      "Check this API for release blockers."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
