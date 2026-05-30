@@ -1,64 +1,98 @@
 # Production Readiness
 
 [![test](https://github.com/RockyYang1225/production-readiness/actions/workflows/test.yml/badge.svg)](https://github.com/RockyYang1225/production-readiness/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Language: English | [简体中文](README.zh.md)
+Languages: English | [简体中文](READMEs/README.zh-CN.md)
 
-Production Readiness is an evidence-first review skill and Codex-compatible plugin for checking whether a project is ready for production, launch, release, deployment, or public use.
+Evidence-first production readiness reviews for Codex, Claude Code, and other agentic developer tools.
 
-It gives development agents a repeatable way to review demo apps, APIs, web apps, full-stack projects, and general software projects without pretending to be a compliance scanner or automatic launch approval system.
+Production Readiness helps development agents decide whether a demo app, API, web app, full-stack project, or general software project is actually ready for launch. It combines a reusable skill, focused review references, and a lightweight project inspector so the review is based on files, commands, and evidence rather than vibes.
 
-## At A Glance
+[Quick Start](#quick-start) · [Installation](#installation) · [Inspector](#project-inspector) · [Report Format](#review-report-format) · [Verify](#verify-this-repository)
 
-| Part | Path | Purpose |
+## Contents
+
+- [Why This Exists](#why-this-exists)
+- [What It Includes](#what-it-includes)
+- [Current Readiness](#current-readiness)
+- [Supported Review Scopes](#supported-review-scopes)
+- [Quick Start](#quick-start)
+- [Installation](#installation)
+- [Project Inspector](#project-inspector)
+- [Review Report Format](#review-report-format)
+- [Verify This Repository](#verify-this-repository)
+- [Repository Layout](#repository-layout)
+- [Status](#status)
+- [License](#license)
+
+## Why This Exists
+
+Demo apps often look polished before they are safe to deploy. Production readiness is less about polish and more about evidence: setup works, tests ran, secrets are handled, deployment is understood, and unverified assumptions are named.
+
+This plugin gives agents a repeatable review path with clear boundaries. It does not certify compliance, perform penetration testing, or make the final release decision for a human owner.
+
+## What It Includes
+
+| Component | Path | Purpose |
 |---|---|---|
-| Main skill | `skills/production-readiness/SKILL.md` | Guides the agent through the review |
-| Review domains | `skills/production-readiness/references/` | Focused checklists for security, deployment, API, web, data, testing, and more |
-| Inspector | `skills/production-readiness/scripts/inspect_project.py` | Detects project type and baseline release signals |
-| Codex plugin | `.codex-plugin/plugin.json` | Lets Codex recognize this repository as a plugin |
-| Install guide | `INSTALL.md` | Copy-pasteable setup notes |
+| Main skill | `skills/production-readiness/SKILL.md` | Guides the agent through evidence-first readiness review |
+| Review references | `skills/production-readiness/references/` | Domain checklists for security, reliability, observability, deployment, data, API, web app, full stack, testing, and general readiness |
+| Inspector | `skills/production-readiness/scripts/inspect_project.py` | Detects project type, release signals, missing signals, and evidence paths |
+| Codex plugin manifest | `.codex-plugin/plugin.json` | Lets Codex recognize this repository as a plugin |
+| Installation guide | `INSTALL.md` | Setup notes for Codex, Claude Code, and validation |
+| Tests and CI | `tests/test_inspect_project.py`, `.github/workflows/test.yml` | Repeatable verification for the inspector |
 
 ## Current Readiness
 
 This repository has been reviewed with its own `production-readiness` skill.
 
-Conclusion: `Ready` for an initial `0.1.0` public plugin release.
+```text
+Production Readiness Review
 
-Evidence:
+Conclusion: Ready
+Scope: Initial public 0.1.0 plugin release
+Project Type: documentation-heavy agent skill/plugin repository
+Evidence Reviewed: README files, INSTALL.md, LICENSE, Codex manifest, skill files, references, inspector script, tests, CI config, inspector output
 
-- Plugin manifest validates through the Codex plugin validator.
-- Inspector tests pass with `python3 -m unittest tests/test_inspect_project.py`.
-- Inspector runs against this repository in Markdown and JSON modes.
-- CI is configured in `.github/workflows/test.yml`.
-- No runtime secrets or environment variables are required, so `.env.example` is intentionally absent.
+Must Fix Before Production:
+- None currently known for the initial public plugin release.
 
-## When To Use It
+High-Risk Gaps:
+- None currently known for the initial public plugin release.
 
-Use this plugin when you want an agent to answer questions like:
+Recommended Improvements:
+- Add example review reports as the project matures.
+- Add release tags once the first version is cut.
 
-- Is this demo app actually ready for production?
-- What blocks this API from being released?
-- What are the highest-risk gaps before deploying this web app?
-- Which checks were verified, and which are still assumptions?
-- Can this project launch only under limited conditions?
+Commands / Checks Run:
+- python3 -m unittest tests/test_inspect_project.py
+- python3 skills/production-readiness/scripts/inspect_project.py .
+- python3 skills/production-readiness/scripts/inspect_project.py . --json
+- python3 /path/to/plugin-creator/scripts/validate_plugin.py .
 
-## What It Reviews
+Unverified Assumptions:
+- Marketplace installation behavior depends on the user's host tool configuration.
 
-- General project hygiene and reproducibility
-- Security basics: secrets, auth, validation, CORS, dependency risk, sensitive logging
-- Reliability: errors, timeouts, retries, resource limits, recovery paths
-- Observability: logs, health checks, metrics, traces, alertable failures
-- Deployment: build/start/test commands, CI, runtime requirements, smoke tests, rollback
-- Data: migrations, backups, validation, retention, destructive operations
-- API readiness: contracts, errors, pagination, idempotency, rate limits, integration tests
-- Web app readiness: core flows, responsive behavior, accessibility basics, browser errors
-- Testing evidence, with a clear split between "tests exist" and "tests were run"
+Release Checklist:
+- README present
+- License present
+- Plugin manifest present and validated
+- Skill and references present
+- Inspector script present and tested
+- CI workflow present
+```
 
-## Boundaries
+The inspector reports `.env.example` as missing, but this repository has no runtime configuration or secrets. That absence is intentional and not a release blocker.
 
-This project does not provide compliance certification, penetration testing, legal review, or a guarantee that a system is safe to launch.
+## Supported Review Scopes
 
-It does not automatically deploy, modify, or fix the target project. The review should separate verified evidence from assumptions and leave release decisions to the human owner.
+- Demo app to production handoff
+- API release readiness
+- Browser-facing web app launch readiness
+- Full-stack project release review
+- General project hygiene and maintainability review
+- Deployment, observability, reliability, security, data, and testing evidence review
 
 ## Quick Start
 
@@ -89,36 +123,24 @@ git clone https://github.com/RockyYang1225/production-readiness.git
 cd production-readiness
 ```
 
-### Codex
+| Host | Setup |
+|---|---|
+| Codex | Install or point Codex at this checkout. Codex reads `.codex-plugin/plugin.json`. |
+| Claude Code | Symlink or copy `skills/production-readiness` into `~/.claude/skills/production-readiness`. |
+| Other file-based skill tools | Point the tool at `skills/production-readiness/SKILL.md`. |
 
-Install or point Codex at the local checkout. Codex reads:
-
-```text
-.codex-plugin/plugin.json
-```
-
-### Claude Code
-
-Symlink the skill:
+Claude Code symlink example:
 
 ```bash
 mkdir -p ~/.claude/skills
 ln -s "$(pwd)/skills/production-readiness" ~/.claude/skills/production-readiness
 ```
 
-Or copy it:
+Copy instead:
 
 ```bash
 mkdir -p ~/.claude/skills
 cp -R skills/production-readiness ~/.claude/skills/
-```
-
-### Other Agent Tools
-
-Point any file-based skill system at:
-
-```text
-skills/production-readiness/SKILL.md
 ```
 
 ## Project Inspector
@@ -135,11 +157,11 @@ Output JSON:
 python3 skills/production-readiness/scripts/inspect_project.py /path/to/project --json
 ```
 
-The inspector is intentionally lightweight. It detects project type, common ecosystems, framework hints, baseline release signals, missing readiness signals, and evidence paths for deeper agent review.
+The inspector is intentionally lightweight. It detects project type, common ecosystems, framework hints, baseline release signals, missing readiness signals, suspicious file names, and evidence paths for deeper agent review.
 
-## Review Output
+## Review Report Format
 
-The skill asks agents to return this report shape:
+Agents using this skill should return:
 
 ```text
 Production Readiness Review
@@ -191,26 +213,6 @@ Validate the Codex plugin manifest when the validator is available:
 python3 /path/to/plugin-creator/scripts/validate_plugin.py .
 ```
 
-Expected inspector posture for this repository:
-
-- Project type: `documentation-heavy`
-- Required release signals present: README, license, tests, CI
-- Known non-blocker: `.env.example` is absent because the repository has no runtime configuration
-
-Release evidence:
-
-- README: `README.md`, `README.zh.md`
-- Installation guide: `INSTALL.md`
-- License: `LICENSE`
-- Codex plugin manifest: `.codex-plugin/plugin.json`
-- Main skill: `skills/production-readiness/SKILL.md`
-- Review domains: `skills/production-readiness/references/`
-- Inspector script: `skills/production-readiness/scripts/inspect_project.py`
-- Unit tests: `tests/test_inspect_project.py`
-- CI workflow: `.github/workflows/test.yml`
-
-No runtime secrets or environment variables are required for this repository, so `.env.example` is intentionally not included.
-
 ## Repository Layout
 
 ```text
@@ -223,7 +225,8 @@ production-readiness/
   INSTALL.md
   LICENSE
   README.md
-  README.zh.md
+  READMEs/
+    README.zh-CN.md
   skills/
     production-readiness/
       SKILL.md
@@ -240,4 +243,4 @@ Initial release target: `0.1.0`.
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).
