@@ -1,41 +1,70 @@
 # Production Readiness
 
-Production Readiness is an agent skill and Codex-compatible plugin for reviewing whether a demo app, API, web app, full-stack project, or general software project is ready for production.
+Production Readiness is an evidence-first review skill and Codex-compatible plugin for checking whether a project is ready for production, launch, release, deployment, or public use.
 
-It is designed for evidence-first reviews. The agent should inspect files, configs, docs, tests, logs, screenshots, and command output before calling a project ready.
+It helps development agents review demo apps, APIs, web apps, full-stack projects, and general software projects without pretending to be a compliance scanner or automatic launch approval system.
 
-## What It Checks
+## Supported Review Scopes
 
-- General project hygiene and reproducibility
-- Security basics, including secrets, auth, validation, CORS, and sensitive logging
-- Reliability, error handling, timeouts, retries, and recovery paths
-- Observability, including logs, health checks, metrics, traces, and alertable failures
-- Deployment readiness, environment config, release gates, smoke tests, and rollback paths
-- Data handling, migrations, backup/restore, validation, privacy, and destructive operations
-- API contracts, errors, pagination, idempotency, rate limits, and integration tests
-- Web app flows, responsive behavior, accessibility basics, browser errors, and performance
-- Full-stack integration across frontend, backend, database, auth, and deployment topology
-- Testing evidence, with a clear distinction between tests that exist and tests that were run
+- Demo app to production handoff
+- API release readiness
+- Browser-facing web app launch readiness
+- Full-stack project release review
+- General project hygiene and maintainability review
+- Deployment, observability, reliability, security, data, and testing evidence review
 
-## What It Does Not Do
+## What This Plugin Provides
 
-This project does not provide compliance certification, penetration testing, legal review, or a guarantee that a system is safe to launch. It is a structured review aid for development agents and human reviewers.
+- A main skill: `skills/production-readiness/SKILL.md`
+- Focused review references in `skills/production-readiness/references/`
+- A dependency-free Python inspector: `skills/production-readiness/scripts/inspect_project.py`
+- Codex plugin metadata: `.codex-plugin/plugin.json`
+- Installation notes for Codex, Claude Code, and other file-based agent tools
+- Unit tests and a GitHub Actions workflow for the inspector
 
-It does not automatically deploy, modify, or fix the target project.
+## What It Does Not Provide
+
+This project does not provide compliance certification, penetration testing, legal review, or a guarantee that a system is safe to launch.
+
+It does not automatically deploy, modify, or fix the target project. The review should separate verified evidence from assumptions and leave release decisions to the human owner.
+
+## Quick Start
+
+Ask your agent:
+
+```text
+Use the production-readiness skill to review this project.
+Project path: /path/to/project
+Scope: full-stack web app
+Target deployment: public web deployment
+Risk tolerance: low for auth and data
+Return blockers, high-risk gaps, evidence, unverified assumptions, and a release checklist.
+```
+
+For an API-only review:
+
+```text
+Use the production-readiness skill to review the API layer only.
+Focus on auth, validation, error responses, pagination, rate limits, idempotency, docs, and integration tests.
+```
 
 ## Installation
 
 ### Codex
 
-Clone this repository from its GitHub page, then install or point Codex at the local checkout.
+Clone the repository:
 
-Codex reads plugin metadata from:
+```bash
+git clone https://github.com/RockyYang1225/production-readiness.git
+```
+
+Install or point Codex at the local checkout as a plugin. Codex reads:
 
 ```text
 .codex-plugin/plugin.json
 ```
 
-The plugin exposes its skill from:
+The plugin exposes:
 
 ```text
 skills/production-readiness/SKILL.md
@@ -43,54 +72,31 @@ skills/production-readiness/SKILL.md
 
 ### Claude Code
 
-Copy or symlink the skill directory into your Claude Code skills directory:
+Symlink the skill into Claude Code's skills directory:
 
 ```bash
 mkdir -p ~/.claude/skills
 ln -s /path/to/production-readiness/skills/production-readiness ~/.claude/skills/production-readiness
 ```
 
-Then ask Claude Code for a production-readiness, launch-readiness, or release-readiness review.
+Or copy it:
+
+```bash
+mkdir -p ~/.claude/skills
+cp -R /path/to/production-readiness/skills/production-readiness ~/.claude/skills/
+```
 
 ### Other Agent Tools
 
-Any agent tool that supports file-based skills can use:
+Any tool that supports file-based skills can point at:
 
 ```text
 skills/production-readiness/SKILL.md
 ```
 
-The reference files live in:
+## Project Inspector
 
-```text
-skills/production-readiness/references/
-```
-
-## Quick Start
-
-Ask your agent:
-
-```text
-Use the production-readiness skill to review this project for a production launch.
-Scope: full-stack web app.
-Project path: /path/to/project.
-Target deployment: public web deployment.
-Risk tolerance: low for auth, data, and payment flows.
-Return blockers, high-risk gaps, evidence, unverified assumptions, and a release checklist.
-```
-
-For a narrower API review:
-
-```text
-Use the production-readiness skill to review the API layer only.
-Focus on auth, validation, error responses, rate limits, idempotency, docs, and integration tests.
-```
-
-## Project Inspection Script
-
-This repository includes a lightweight, dependency-free Python script for gathering project signals.
-
-Run it against a project:
+Run the inspector against a project:
 
 ```bash
 python3 skills/production-readiness/scripts/inspect_project.py /path/to/project
@@ -102,11 +108,11 @@ Output JSON:
 python3 skills/production-readiness/scripts/inspect_project.py /path/to/project --json
 ```
 
-The script is intended to identify useful review signals, not to replace manual inspection. It can detect common project files, likely ecosystems, missing readiness signals, and evidence paths for the agent to review.
+The inspector detects project type, common ecosystems, framework hints, baseline release signals, missing readiness signals, and evidence paths. It is intentionally lightweight and does not replace manual review.
 
-## Review Report Format
+## Review Output
 
-The skill asks agents to return reports in this shape:
+The skill asks agents to return this report shape:
 
 ```text
 Production Readiness Review
@@ -137,12 +143,54 @@ Conclusion guidance:
 - `Conditionally Ready`: acceptable for a limited launch, pilot, internal deployment, or demo under named constraints.
 - `Not Ready`: missing critical security, reliability, deployment, data, or verification evidence.
 
+## Repository Readiness Evidence
+
+This repository has been checked with its own production-readiness workflow.
+
+Evidence currently present:
+
+- README: `README.md`
+- Installation guide: `INSTALL.md`
+- License: `LICENSE`
+- Codex plugin manifest: `.codex-plugin/plugin.json`
+- Main skill: `skills/production-readiness/SKILL.md`
+- Review domains: `skills/production-readiness/references/`
+- Inspector script: `skills/production-readiness/scripts/inspect_project.py`
+- Unit tests: `tests/test_inspect_project.py`
+- CI workflow: `.github/workflows/test.yml`
+
+No runtime secrets or environment variables are required for this repository, so an `.env.example` file is intentionally not included.
+
+## Development Checks
+
+Run tests:
+
+```bash
+python3 -m unittest tests/test_inspect_project.py
+```
+
+Run the inspector against this repository:
+
+```bash
+python3 skills/production-readiness/scripts/inspect_project.py .
+python3 skills/production-readiness/scripts/inspect_project.py . --json
+```
+
+Validate the Codex plugin manifest when the validator is available:
+
+```bash
+python3 /path/to/plugin-creator/scripts/validate_plugin.py .
+```
+
 ## Repository Layout
 
 ```text
 production-readiness/
   .codex-plugin/
     plugin.json
+  .github/
+    workflows/
+      test.yml
   INSTALL.md
   LICENSE
   README.md
@@ -159,20 +207,6 @@ production-readiness/
 ## Status
 
 Initial release target: `0.1.0`.
-
-## Development Checks
-
-Run the inspector tests:
-
-```bash
-python3 -m unittest tests/test_inspect_project.py
-```
-
-Validate the plugin manifest if you have the Codex plugin validator available:
-
-```bash
-python3 /Users/rockyyang/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py .
-```
 
 ## License
 
