@@ -18,6 +18,20 @@ It gives development agents a repeatable way to review demo apps, APIs, web apps
 | Codex plugin | `.codex-plugin/plugin.json` | Lets Codex recognize this repository as a plugin |
 | Install guide | `INSTALL.md` | Copy-pasteable setup notes |
 
+## Current Readiness
+
+This repository has been reviewed with its own `production-readiness` skill.
+
+Conclusion: `Ready` for an initial `0.1.0` public plugin release.
+
+Evidence:
+
+- Plugin manifest validates through the Codex plugin validator.
+- Inspector tests pass with `python3 -m unittest tests/test_inspect_project.py`.
+- Inspector runs against this repository in Markdown and JSON modes.
+- CI is configured in `.github/workflows/test.yml`.
+- No runtime secrets or environment variables are required, so `.env.example` is intentionally absent.
+
 ## When To Use It
 
 Use this plugin when you want an agent to answer questions like:
@@ -177,7 +191,13 @@ Validate the Codex plugin manifest when the validator is available:
 python3 /path/to/plugin-creator/scripts/validate_plugin.py .
 ```
 
-Current repository evidence:
+Expected inspector posture for this repository:
+
+- Project type: `documentation-heavy`
+- Required release signals present: README, license, tests, CI
+- Known non-blocker: `.env.example` is absent because the repository has no runtime configuration
+
+Release evidence:
 
 - README: `README.md`, `README.zh.md`
 - Installation guide: `INSTALL.md`
