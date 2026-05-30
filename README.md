@@ -1,5 +1,7 @@
 # Production Readiness
 
+Language: English | [简体中文](README.zh.md)
+
 Production Readiness is an evidence-first review skill and Codex-compatible plugin for checking whether a project is ready for production, launch, release, deployment, or public use.
 
 It helps development agents review demo apps, APIs, web apps, full-stack projects, and general software projects without pretending to be a compliance scanner or automatic launch approval system.
