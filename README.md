@@ -40,8 +40,9 @@ This plugin gives agents a repeatable review path with clear boundaries. It does
 | Review references | `skills/production-readiness/references/` | Domain checklists for security, reliability, observability, deployment, data, API, web app, full stack, testing, and general readiness |
 | Inspector | `skills/production-readiness/scripts/inspect_project.py` | Detects project type, release signals, missing signals, and evidence paths |
 | Codex plugin manifest | `.codex-plugin/plugin.json` | Lets Codex recognize this repository as a plugin |
-| Installation guide | `INSTALL.md` | Setup notes for Codex, Claude Code, and validation |
-| Tests and CI | `tests/test_inspect_project.py`, `.github/workflows/test.yml` | Repeatable verification for the inspector |
+| Installer | `install.sh` | One-command install, update, and uninstall for Codex, Claude Code, and file-based skill tools |
+| Installation guide | `INSTALL.md` | Setup notes and fallback manual installation |
+| Tests and CI | `tests/test_inspect_project.py`, `tests/test_install_script.py`, `.github/workflows/test.yml` | Repeatable verification for the inspector and installer |
 
 ## Current Readiness
 
@@ -67,6 +68,7 @@ Recommended Improvements:
 
 Commands / Checks Run:
 - python3 -m unittest tests/test_inspect_project.py
+- python3 -m unittest tests/test_install_script.py
 - python3 skills/production-readiness/scripts/inspect_project.py .
 - python3 skills/production-readiness/scripts/inspect_project.py . --json
 - python3 /path/to/plugin-creator/scripts/validate_plugin.py .
@@ -80,6 +82,7 @@ Release Checklist:
 - Plugin manifest present and validated
 - Skill and references present
 - Inspector script present and tested
+- Installer script present and tested
 - CI workflow present
 ```
 
@@ -116,7 +119,54 @@ Focus on auth, validation, error responses, pagination, rate limits, idempotency
 
 ## Installation
 
-Clone the repository:
+### One-command install
+
+macOS / Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/RockyYang1225/production-readiness/main/install.sh | bash
+```
+
+Install only one host:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/RockyYang1225/production-readiness/main/install.sh | bash -s codex
+curl -fsSL https://raw.githubusercontent.com/RockyYang1225/production-readiness/main/install.sh | bash -s claude
+curl -fsSL https://raw.githubusercontent.com/RockyYang1225/production-readiness/main/install.sh | bash -s agents
+```
+
+The installer clones or updates the repository at:
+
+```text
+~/.production-readiness/repo
+```
+
+Then it creates the selected symlinks:
+
+| Host | Installed path |
+|---|---|
+| Codex | `~/plugins/production-readiness` and `~/.agents/plugins/marketplace.json` |
+| Claude Code | `~/.claude/skills/production-readiness` |
+| File-based skill tools | `~/.agents/skills/production-readiness` |
+
+Update:
+
+```bash
+~/.production-readiness/repo/install.sh --update
+```
+
+Uninstall:
+
+```bash
+~/.production-readiness/repo/install.sh --uninstall all
+~/.production-readiness/repo/install.sh --uninstall codex
+~/.production-readiness/repo/install.sh --uninstall claude
+~/.production-readiness/repo/install.sh --uninstall agents
+```
+
+### Manual install
+
+Clone the repository yourself:
 
 ```bash
 git clone https://github.com/RockyYang1225/production-readiness.git
@@ -198,6 +248,7 @@ Run tests:
 
 ```bash
 python3 -m unittest tests/test_inspect_project.py
+python3 -m unittest tests/test_install_script.py
 ```
 
 Run the inspector against this repository:
@@ -227,6 +278,7 @@ production-readiness/
   README.md
   READMEs/
     README.zh-CN.md
+  install.sh
   skills/
     production-readiness/
       SKILL.md

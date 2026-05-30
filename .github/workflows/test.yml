@@ -15,4 +15,5 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m unittest tests/test_inspect_project.py
+      - run: python -m unittest tests/test_install_script.py
       - run: python skills/production-readiness/scripts/inspect_project.py . --json
